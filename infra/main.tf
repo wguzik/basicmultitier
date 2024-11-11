@@ -38,9 +38,9 @@ module "key_vault" {
   resource_group_name = module.resource_group.name
   location            = module.resource_group.location
 
-  allowed_ips = [
-    var.my_ip
-  ]
+  #allowed_ips = [
+  #  var.my_ip
+  #]
 
   enable_private_endpoint    = true
   private_endpoint_subnet_id = module.network.subnet_ids["main"]
