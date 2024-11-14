@@ -16,7 +16,6 @@ module "network" {
   vnet_name           = local.vnet_name
   address_space       = ["10.0.0.0/16"]
 
-  # Optional: Override subnet address prefixes
   custom_subnet_prefixes = {
     frontend = ["10.0.1.0/24"]
     backend  = ["10.0.2.0/26"]
@@ -70,7 +69,7 @@ module "backend" {
   docker_registry_url = var.docker_registry_url
   subnet_id           = module.network.subnet_ids["webapp"]
 
-  enable_private_endpoint    = true
+  enable_private_endpoint    = false # zmien tutaj
   private_endpoint_subnet_id = module.network.subnet_ids["backend"]
   private_dns_zone_id        = module.dnszone.webapp_dns_zone_id
   app_settings = {
@@ -98,20 +97,8 @@ module "frontend" {
     "REACT_APP_API_URL"=module.backend.url
   }
 }
-#
 
-
-#
-#module "application_gateway" {
-#  source              = "./modules/application_gateway"
-#  resource_group_name = module.resource_group.name
-#  location           = module.resource_group.location
-#  name               = local.appgw_name
-#  subnet_id          = module.network.subnet_ids["agw"]
-#  web_app_name       = module.frontend.name
-#  web_app_ip         = "10.0.0.1"
-#}
-
+## nie jest potrzebne do labu
 #module "container_registry" {
 #  source              = "./modules/container_registry"
 #  name                = var.acr_name
