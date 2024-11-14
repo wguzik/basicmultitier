@@ -1,11 +1,25 @@
 import axios from 'axios';
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001';
+const API_URL = window.ENV_CONFIG?.REACT_APP_API_URL || 
+                process.env.REACT_APP_API_URL || 
+                'http://localhost:3005';
+
+if (!API_URL || API_URL === 'not set') {
+  console.error('API_URL is not configured properly');
+}
 
 export const todoService = {
   getAllTodos: async () => {
-    const response = await axios.get(`${API_URL}/api/todos`);
-    return response.data;
+    try {
+      const response = await axios.get(`${API_URL}/api/todos`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching todos:', error);
+      throw new Error(
+        error.response?.data?.message || 
+        'Failed to fetch todos. Please check API configuration.'
+      );
+    }
   },
 
   updateTodoState: async (id, state) => {

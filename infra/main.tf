@@ -24,7 +24,7 @@ module "network" {
     database = ["10.0.2.128/27"]
   }
 
- # enable_nsg = true does not work yet
+  # enable_nsg = true does not work yet
 }
 module "dnszone" {
   source              = "./modules/dnszone"
@@ -61,8 +61,6 @@ module "postgresql" {
 
   subnet_id           = module.network.subnet_ids["database"]
   private_dns_zone_id = module.dnszone.psql_dns_zone_id
-
-  depends_on = [azurerm_key_vault_secret.postgresql_password, azurerm_key_vault_secret.postgresql_username]
 }
 
 module "backend" {
@@ -74,13 +72,15 @@ module "backend" {
   docker_registry_url = var.docker_registry_url
   subnet_id           = module.network.subnet_ids["webapp"]
 
-  enable_private_endpoint    = true
+  enable_private_endpoint    = false
   private_endpoint_subnet_id = module.network.subnet_ids["backend"]
   private_dns_zone_id        = module.dnszone.webapp_dns_zone_id
   app_settings = {
-    "WEBSITES_PORT"     = "80"
-    "CONNECTION_STRING" = module.postgresql.connection_string
+    "WEBSITES_PORT"     = "3001"
+    "DATABASE_URL" = module.postgresql.connection_string
   }
+
+  depends_on = [ module.postgresql ]
 }
 
 module "frontend" {
@@ -96,8 +96,8 @@ module "frontend" {
   private_endpoint_subnet_id = module.network.subnet_ids["frontend"]
   private_dns_zone_id        = module.dnszone.webapp_dns_zone_id
   app_settings = {
-    "WEBSITES_PORT" = "80"
-    "BACKEND_URL"   = "url" #module.backend.private_endpoint_url
+    "WEBSITES_PORT" = "3000"
+    "REACT_APP_API_URL"=module.backend.url
   }
 }
 #

@@ -16,13 +16,58 @@ const BoardContainer = styled.div`
   }
 `;
 
+const EnvSection = styled.div`
+  margin-top: 20px;
+  padding: 16px;
+  background: #f5f5f5;
+  border-radius: 4px;
+`;
+
+const ErrorMessage = styled.div`
+  margin: 20px 0;
+  padding: 16px;
+  background: #fee2e2;
+  border: 1px solid #ef4444;
+  border-radius: 4px;
+  color: #dc2626;
+  font-weight: 500;
+`;
+
+const StatusIndicator = styled.span.attrs(props => ({
+  'data-connected': props.connected
+}))`
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 8px;
+  background-color: ${props => props['data-connected'] ? '#22c55e' : '#ef4444'};
+`;
+
+const StatusRow = styled.div`
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+`;
+
 const Board = ({ refreshTrigger }) => {
   const [todos, setTodos] = useState([]);
+  const [error, setError] = useState(null);
+  const [apiStatus, setApiStatus] = useState(false);
 
   useEffect(() => {
     const fetchTodos = async () => {
-      const data = await todoService.getAllTodos();
-      setTodos(data);
+      try {
+        const data = await todoService.getAllTodos();
+        setTodos(data);
+        setError(null);
+        setApiStatus(true);
+      } catch (err) {
+        console.error('Failed to fetch todos:', err);
+        setError('Failed to connect to the API. Please check if the API URL is correctly configured.');
+        setTodos([]);
+        setApiStatus(false);
+      }
     };
     fetchTodos();
   }, [refreshTrigger]);
@@ -60,31 +105,58 @@ const Board = ({ refreshTrigger }) => {
     }
   };
 
+  const apiUrl = window.ENV_CONFIG?.REACT_APP_API_URL || 
+                process.env.REACT_APP_API_URL || 
+                'not set';
+
   return (
-    <BoardContainer>
-      <Column
-        title="Todo"
-        todos={getColumnTodos(TodoState.TODO)}
-        onMoveRight={(todo) => moveCard(todo, TodoState.IN_PROGRESS)}
-        onDelete={handleDelete}
-        onEdit={handleEdit}
-      />
-      <Column
-        title="In Progress"
-        todos={getColumnTodos(TodoState.IN_PROGRESS)}
-        onMoveLeft={(todo) => moveCard(todo, TodoState.TODO)}
-        onMoveRight={(todo) => moveCard(todo, TodoState.DONE)}
-        onDelete={handleDelete}
-        onEdit={handleEdit}
-      />
-      <Column
-        title="Done"
-        todos={getColumnTodos(TodoState.DONE)}
-        onMoveLeft={(todo) => moveCard(todo, TodoState.IN_PROGRESS)}
-        onDelete={handleDelete}
-        onEdit={handleEdit}
-      />
-    </BoardContainer>
+    <>
+      {!apiUrl || apiUrl === 'not set' ? (
+        <ErrorMessage>
+          API URL is not configured. Please set REACT_APP_API_URL environment variable.
+        </ErrorMessage>
+      ) : (
+        <BoardContainer>
+          <Column
+            title="Todo"
+            todos={getColumnTodos(TodoState.TODO)}
+            onMoveRight={(todo) => moveCard(todo, TodoState.IN_PROGRESS)}
+            onDelete={handleDelete}
+            onEdit={handleEdit}
+          />
+          <Column
+            title="In Progress"
+            todos={getColumnTodos(TodoState.IN_PROGRESS)}
+            onMoveLeft={(todo) => moveCard(todo, TodoState.TODO)}
+            onMoveRight={(todo) => moveCard(todo, TodoState.DONE)}
+            onDelete={handleDelete}
+            onEdit={handleEdit}
+          />
+          <Column
+            title="Done"
+            todos={getColumnTodos(TodoState.DONE)}
+            onMoveLeft={(todo) => moveCard(todo, TodoState.IN_PROGRESS)}
+            onDelete={handleDelete}
+            onEdit={handleEdit}
+          />
+        </BoardContainer>
+      )}
+      
+      <EnvSection>
+        <h3>Environment Variables:</h3>
+        <div style={{ marginTop: '8px' }}>
+          <strong>REACT_APP_API_URL: </strong>
+          {apiUrl}
+        </div>
+        <StatusRow>
+          <strong>API Connection Status: </strong>
+          <div style={{ display: 'flex', alignItems: 'center', marginLeft: '8px' }}>
+            <StatusIndicator connected={apiStatus} />
+            {apiStatus ? 'Connected' : 'Disconnected'}
+          </div>
+        </StatusRow>
+      </EnvSection>
+    </>
   );
 };
 

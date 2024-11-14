@@ -32,3 +32,8 @@ output "private_endpoint_url" {
   description = "Private endpoint URL of the web app"
   value       = one(azurerm_private_endpoint.main[*].custom_dns_configs[*].fqdn)
 }
+
+output "url" {
+  description = "URL of the web app"
+  value       = azurerm_linux_web_app.main.default_hostname
+}

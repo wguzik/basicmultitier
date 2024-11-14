@@ -15,7 +15,7 @@ locals {
   location_short = lookup(local.location_map, var.location, "we")
 
   # Base name format: {project}-{env}-{location}
-  name_prefix = "${var.project_name}-${var.environment}-${local.location_short}"
+  name_prefix = "${var.project_name}-${var.environment}-${local.location_short}-${random_string.random.result}"
 
   # Resource naming
   resource_group_name    = "${local.name_prefix}-rg"
@@ -28,3 +28,9 @@ locals {
   key_vault_name         = "${local.name_prefix}-kv"
   acr_name               = replace("${var.project_name}${var.environment}acr", "-", "") # ACR name cannot contain hyphens
 } 
+
+resource "random_string" "random" {
+  length           = 4
+  special          = false
+  override_special = "/@£$"
+}
