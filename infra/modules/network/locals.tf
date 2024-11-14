@@ -42,6 +42,12 @@ locals {
       service_endpoints = []
       delegation        = null
     }
+      lb = {
+      name              = "lb-subnet"
+      address_prefixes  = ["10.0.5.0/24"]
+      service_endpoints = []
+      delegation        = null
+    }
   }
 
   # Merge subnet config with any custom address prefixes

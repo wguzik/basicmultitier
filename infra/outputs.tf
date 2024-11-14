@@ -17,7 +17,7 @@
 #  description = "URL of the backend backend app"
 #  value       = module.backend.url
 #}
-#
+##
 #output "frontend_url" {
 #  description = "URL of the frontend web app"
 #  value       = module.frontend.default_hostname

@@ -58,8 +58,9 @@ variable "allowed_ip_ranges" {
   default     = []
 }
 
-variable "my_ip" {
-  type        = string
-  description = "List of IP ranges allowed to access Key Vault"
-  default     = null
-}
+#White list your IP on KV, Postgres, etc
+#variable "my_ip" {
+#  type        = string
+#  description = "List of IP ranges allowed to access Key Vault"
+#  default     = null
+#}
