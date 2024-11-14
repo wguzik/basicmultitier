@@ -21,7 +21,7 @@ Nawiguj w przeglądarce do [portal.azure.com](https://portal.azure.com), uruchom
 ```bash
 git clone https://github.com/wguzik/basicmultitier.git
 
-cd basicmultitier
+cd basicmultitier/infra
 ```
 
 > Poniższe kroki realizuje się za pomocą Cloud Shell.
