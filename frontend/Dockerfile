@@ -13,7 +13,8 @@ RUN npm install
 # Copy source code
 COPY . .
 
-# Build the application
+# Build with build-time variables
+
 RUN npm run build
 
 # Stage 2: Production stage
@@ -22,11 +23,20 @@ FROM node:20-alpine
 # Set working directory
 WORKDIR /app
 
-# Install serve package globally
+# Install serve
 RUN npm install -g serve
 
 # Copy built assets from builder
 COPY --from=builder /app/build ./build
+
+# Copy start script
+COPY start.sh /app/start.sh
+
+# Make script executable
+RUN chmod +x /app/start.sh
+
+# Inject the env-config.js script into index.html
+RUN sed -i '/<head>/a \    <script src="%PUBLIC_URL%/env-config.js"></script>' ./build/index.html
 
 # Create and use non-root user
 RUN addgroup -S nodegroup && \
@@ -35,12 +45,12 @@ RUN addgroup -S nodegroup && \
 
 USER nodeuser
 
-# Expose port
+ENV REACT_APP_API_URL="http://localhost:3001"
+
 EXPOSE 3000
 
-# Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=30s \
     CMD wget --quiet --tries=1 --spider http://localhost:3000 || exit 1
 
-# Start the application
-CMD ["serve", "-s", "build", "-l", "3000"]
+# Use the start script
+CMD ["/app/start.sh"]

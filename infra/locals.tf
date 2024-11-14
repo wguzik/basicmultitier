@@ -20,8 +20,8 @@ locals {
   # Resource naming
   resource_group_name    = "${local.name_prefix}-rg"
   vnet_name              = "${local.name_prefix}-vnet"
-  postgresql_server_name = "${local.name_prefix}-psql"
-  postgresql_db_name     = "${local.name_prefix}-db"
+  postgresql_server_name = lower("${local.name_prefix}-psql")
+  postgresql_db_name     = lower("${local.name_prefix}-db")
   frontend_app_name      = "${local.name_prefix}-fe"
   backend_app_name       = "${local.name_prefix}-be"
   appgw_name             = "${local.name_prefix}-agw"

@@ -26,7 +26,7 @@ resource "azurerm_subnet" "subnets" {
   }
 
   lifecycle {
-    ignore_changes = [delegation]
+    ignore_changes = [delegation, service_endpoints]
   }
 }
 
