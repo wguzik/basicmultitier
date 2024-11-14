@@ -14,7 +14,8 @@ RUN npm install
 COPY . .
 
 # Build with build-time variables
-
+ARG REACT_APP_API_URL
+ENV REACT_APP_API_URL=$REACT_APP_API_URL
 RUN npm run build
 
 # Stage 2: Production stage
@@ -45,7 +46,6 @@ RUN addgroup -S nodegroup && \
 
 USER nodeuser
 
-ENV REACT_APP_API_URL="http://localhost:3001"
 
 EXPOSE 3000
 
