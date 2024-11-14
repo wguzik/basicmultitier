@@ -13,15 +13,15 @@
 #  value       = module.postgresql.server_fqdn
 #}
 #
-output "backend_url" {
-  description = "URL of the backend backend app"
-  value       = module.backend.url
-}
-#
-output "frontend_url" {
-  description = "URL of the frontend web app"
-  value       = module.frontend.default_hostname
-}
+#output "backend_url" {
+#  description = "URL of the backend backend app"
+#  value       = module.backend.url
+#}
+##
+#output "frontend_url" {
+#  description = "URL of the frontend web app"
+#  value       = module.frontend.default_hostname
+#}
 #
 #output "application_gateway_ip" {
 #  description = "Public IP address of the application gateway"

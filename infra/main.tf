@@ -16,7 +16,6 @@ module "network" {
   vnet_name           = local.vnet_name
   address_space       = ["10.0.0.0/16"]
 
-
   # Optional: Override subnet address prefixes
   custom_subnet_prefixes = {
     frontend = ["10.0.1.0/24"]
@@ -47,7 +46,6 @@ module "key_vault" {
   private_dns_zone_id        = module.dnszone.keyvault_dns_zone_id
 }
 
-#
 module "postgresql" {
   source              = "./modules/postgresql"
   resource_group_name = module.resource_group.name
@@ -72,7 +70,7 @@ module "backend" {
   docker_registry_url = var.docker_registry_url
   subnet_id           = module.network.subnet_ids["webapp"]
 
-  enable_private_endpoint    = false
+  enable_private_endpoint    = true
   private_endpoint_subnet_id = module.network.subnet_ids["backend"]
   private_dns_zone_id        = module.dnszone.webapp_dns_zone_id
   app_settings = {
@@ -102,17 +100,16 @@ module "frontend" {
 }
 #
 
-#
 
 #
 #module "application_gateway" {
 #  source              = "./modules/application_gateway"
 #  resource_group_name = module.resource_group.name
 #  location           = module.resource_group.location
-#  name               = var.appgw_name
-#  subnet_id          = module.network.agw_subnet_id
-#  web_app_name       = module.web_app.name
-#  web_app_ip         = module.web_app.ip_address
+#  name               = local.appgw_name
+#  subnet_id          = module.network.subnet_ids["agw"]
+#  web_app_name       = module.frontend.name
+#  web_app_ip         = "10.0.0.1"
 #}
 
 #module "container_registry" {
@@ -144,5 +141,3 @@ module "frontend" {
 #  tags = var.tags
 #}
 
-
-# Create private DNS zone for Key Vault
