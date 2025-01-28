@@ -53,6 +53,12 @@ terraform plan
 
 ### Krok -1 - Usuń zasoby
 
+```bash
+terraform destroy
 ```
+
+lub 
+
+```bash
 az group delete --name $RESOURCE_GROUP --yes --no-wait
 ```
