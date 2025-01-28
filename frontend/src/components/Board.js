@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Column from './Column';
-import { todoService } from '../services/todoService';
+import { todoService, API_URL } from '../services/todoService';
 import { TodoState } from '../types';
 
 const BoardContainer = styled.div`
@@ -105,49 +105,38 @@ const Board = ({ refreshTrigger }) => {
     }
   };
 
-  const apiUrl = window.ENV_CONFIG?.REACT_APP_API_URL || 
-                process.env.REACT_APP_API_URL || 
-                'not set';
-
   return (
     <>
-      {!apiUrl || apiUrl === 'not set' ? (
-        <ErrorMessage>
-          API URL is not configured. Please set REACT_APP_API_URL environment variable.
-        </ErrorMessage>
-      ) : (
-        <BoardContainer>
-          <Column
-            title="Todo"
-            todos={getColumnTodos(TodoState.TODO)}
-            onMoveRight={(todo) => moveCard(todo, TodoState.IN_PROGRESS)}
-            onDelete={handleDelete}
-            onEdit={handleEdit}
-          />
-          <Column
-            title="In Progress"
-            todos={getColumnTodos(TodoState.IN_PROGRESS)}
-            onMoveLeft={(todo) => moveCard(todo, TodoState.TODO)}
-            onMoveRight={(todo) => moveCard(todo, TodoState.DONE)}
-            onDelete={handleDelete}
-            onEdit={handleEdit}
-          />
-          <Column
-            title="Done"
-            todos={getColumnTodos(TodoState.DONE)}
-            onMoveLeft={(todo) => moveCard(todo, TodoState.IN_PROGRESS)}
-            onDelete={handleDelete}
-            onEdit={handleEdit}
-          />
-        </BoardContainer>
-      )}
+      <BoardContainer>
+        <Column
+          title="Todo"
+          todos={getColumnTodos(TodoState.TODO)}
+          onMoveRight={(todo) => moveCard(todo, TodoState.IN_PROGRESS)}
+          onDelete={handleDelete}
+          onEdit={handleEdit}
+        />
+        <Column
+          title="In Progress"
+          todos={getColumnTodos(TodoState.IN_PROGRESS)}
+          onMoveLeft={(todo) => moveCard(todo, TodoState.TODO)}
+          onMoveRight={(todo) => moveCard(todo, TodoState.DONE)}
+          onDelete={handleDelete}
+          onEdit={handleEdit}
+        />
+        <Column
+          title="Done"
+          todos={getColumnTodos(TodoState.DONE)}
+          onMoveLeft={(todo) => moveCard(todo, TodoState.IN_PROGRESS)}
+          onDelete={handleDelete}
+          onEdit={handleEdit}
+        />
+      </BoardContainer>
       
       <EnvSection>
-        <h3>Environment Variables:</h3>
-        <div style={{ marginTop: '8px' }}>
-          <strong>REACT_APP_API_URL: </strong>
-          {apiUrl}
-        </div>
+        <StatusRow>
+          <strong>Api url: </strong>
+          {`${API_URL}`}
+        </StatusRow>
         <StatusRow>
           <strong>API Connection Status: </strong>
           <div style={{ display: 'flex', alignItems: 'center', marginLeft: '8px' }}>
