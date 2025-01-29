@@ -98,33 +98,17 @@ module "frontend" {
   }
 }
 
-## nie jest potrzebne do labu
-#module "container_registry" {
-#  source              = "./modules/container_registry"
-#  name                = var.acr_name
-#  resource_group_name = module.resource_group.name
-#  location           = module.resource_group.location
-#  sku                = "Premium"
-#  
-#  network_rule_set = {
-#    default_action = "Deny"
-#    ip_rules       = var.allowed_ip_ranges
-#    subnet_ids     = [
-#      module.network.subnet_ids["frontend"],
-#      module.network.subnet_ids["backend"]
-#    ]
-#  }
-#
-#  # Grant pull access to web app and container app
-#  acr_pull_principals = [
-#    module.frontend.identity.principal_id,
-#    module.backend.identity.principal_id
-#  ]
-#
-#  enable_private_endpoint = true
-#  private_endpoint_subnet_id = module.network.subnet_ids["backend"]
-#  private_dns_zone_ids   = [azurerm_private_dns_zone.acr.id]
-#
-#  tags = var.tags
-#}
+# nie jest potrzebne do labu
+module "container_registry" {
+  source              = "./modules/container_registry"
+  name                = local.acr_name
+  resource_group_name = module.resource_group.name
+  location           = module.resource_group.location
+  sku                = "Basic"
+  
+  acr_pull_principals = [
+    module.frontend.identity.principal_id,
+    module.backend.identity.principal_id
+  ]
+}
 

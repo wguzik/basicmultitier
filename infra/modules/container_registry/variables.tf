@@ -20,7 +20,7 @@ variable "location" {
 variable "sku" {
   type        = string
   description = "SKU of the container registry"
-  default     = "Premium"
+  default     = "Basic"
   validation {
     condition     = contains(["Basic", "Standard", "Premium"], var.sku)
     error_message = "SKU must be one of: Basic, Standard, Premium."
@@ -32,3 +32,9 @@ variable "admin_enabled" {
   description = "Enable admin user for the registry"
   default     = false
 }
+
+variable "acr_pull_principals" {
+  type        = list(string)
+  description = "List of principals to grant pull access to the registry"
+}
+
