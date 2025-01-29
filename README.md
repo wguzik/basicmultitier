@@ -26,7 +26,7 @@ git clone https://github.com/wguzik/basicmultitier.git
 ```
 
 ```bash
-cd basicmultitier/infra
+cd basicmultitier
 ```
 
 ### Krok 2 - Walidacja aplikacji lokalnie
@@ -45,26 +45,92 @@ docker run -d -p 3001:3001 --name backend-app backend-app:latest
 
 ```bash
 # W nowym terminalu - budowanie i uruchomienie frontendu
-cd frontend
+cd ../frontend
 docker build -t frontend-app:latest .
 docker run -d -p 3000:3000 --name frontend-app frontend-app:latest
 ```
 
-Sprawdź działanie aplikacji pod adresem http://localhost:3000
+Sprawdź działanie aplikacji pod adresem http://localhost:3000.
+
+```bash
+curl http://localhost:3000
+``` 
 
 Dlateczego aplikacja frontend nie działa?
+
+### Wariant maszyny linuksowej
+ Jeżeli realizujesz tu ćwiczenie ToDo, musiz najpierw zamknąć oryginalną aplikację.
+
+```bash
+pm2 list
+pm2 stop <ID> #0?
+```
+
+Zmodyfikuj ustawienie Nginx:
+
+```bash
+sudo nano /etc/nginx/sites-available/basictodo
+```
+
+zmodyfikuj linijkę:
+
+```bash
+proxy_pass http://localhost:3000;
+```
+
+```bash
+sudo systemctl restart nginx
+```
+
+W przeglądarce wpisz adres IP maszyny linuksowej.
 
 ### Krok 3 - Uruchomienie przez Docker Compose
 
 ```bash
-# Wróć do katalogu głównego
-cd ..
+# wyczyść instancje
+docker ps
+docker stop <ID>
+docker rm <ID>
+```
+
+```bash
+cd ~/basicmultitier
 docker-compose up --build
+
+# sudo apt install docker-compose, potwierdź instalację
 ```
 
 Aplikacja będzie dostępna pod adresem http://localhost:3000
 
 Przenalizuj plik docker-compose.yml.
+
+### Wariant maszyny linuksowej
+
+Zmodyfikuj ustawienie Nginx:
+
+```bash
+sudo nano /etc/nginx/sites-available/basictodo
+```
+
+Dopisz:
+
+```bash
+    location /api/todos {
+        proxy_pass http://localhost:3001/api/todos;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+```
+
+```bash
+sudo systemctl restart nginx
+```
+
+Otwórz w przeglądarce adres IP maszyny linuksowej.
+
 
 ### Krok 4 - Wgranie obrazów do Azure Container Registry
 
