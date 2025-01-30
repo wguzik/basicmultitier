@@ -177,12 +177,20 @@ az aks create --resource-group $RG_NAME --name $AKS_NAME --location $LOCATION --
 az aks get-credentials --resource-group $RG_NAME --name $AKS_NAME
 ```
 
-### Krok 6 - Utwórz wszystkie zasoby w Kubernetes
+Podłącz repozytorium ACR do klastra AKS:
+
+```bash
+az aks update --name $AKS_NAME --resource-group $RG_NAME --attach-acr $ACR_NAME
+```
+
+Dokumentacja: [Integracja klastra AKS z repozytorium ACR](https://learn.microsoft.com/en-us/azure/aks/cluster-container-registry-integration)
+
+### Krok 6 - Utwórz zasoby w Kubernetes
 
 
 Zaktualizuj odniesienia do obrazów w plikach YAML.
 ```bash
-find deployments-k8s -type f -exec sed -i 's/myACR/mrt-multitier/g' {} \;
+find deployments-k8s -type f -exec sed -i 's/<nazwaAcr>/acr/g' {} \;
 ```
 
 kubectl apply -f deployments-k8s/namespace.yaml
