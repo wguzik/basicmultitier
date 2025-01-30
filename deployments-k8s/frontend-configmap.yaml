@@ -4,4 +4,4 @@ metadata:
   name: frontend-config
   namespace: todo-app
 data:
-  api-url: "http://backend:3001" 
+  api-url: "http://localhost:3001" 

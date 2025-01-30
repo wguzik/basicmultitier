@@ -15,9 +15,16 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: acr.azurecr.io/frontend-app:latest
+        image: acr.azurecr.io/frontend:latest
         ports:
         - containerPort: 3000
+        #resources:
+        #  limits:
+        #    cpu: "500m"
+        #    memory: "512Mi"
+        #  requests:
+        #    cpu: "200m"
+        #    memory: "256Mi"
         env:
         - name: REACT_APP_API_URL
           valueFrom:
@@ -38,7 +45,6 @@ metadata:
   name: frontend
   namespace: todo-app
 spec:
-  type: LoadBalancer  # or NodePort, depending on your cluster
   selector:
     app: frontend
   ports:

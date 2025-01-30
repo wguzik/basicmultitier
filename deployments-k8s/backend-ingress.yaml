@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: todo-front
+  name: todo-backend
   namespace: todo-app
 spec:
   ingressClassName: webapprouting.kubernetes.azure.com
@@ -10,8 +10,8 @@ spec:
       paths:
       - backend:
           service:
-            name: frontend
+            name: backend
             port:
-              number: 80
-        path: /
+              number: 3001
+        path: /api/todos
         pathType: Prefix
