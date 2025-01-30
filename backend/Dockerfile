@@ -24,6 +24,11 @@ COPY . .
 # Stage 2: Production stage
 FROM node:20-alpine AS production
 
+RUN apk update \
+	&& apk add --no-cache openssl\
+	&& rm -rf /var/lib/apt/lists/* \
+	&& rm -rf /var/cache/apk/*
+
 # Add node user for security
 RUN addgroup -S nodegroup && adduser -S nodeuser -G nodegroup
 

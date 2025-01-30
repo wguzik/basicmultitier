@@ -10,12 +10,9 @@ COPY package*.json ./
 # Install dependencies
 RUN npm install
 
-# Copy source code
+# Copy source code (including .env if it exists)
 COPY . .
 
-# Build with build-time variables
-ARG REACT_APP_API_URL
-ENV REACT_APP_API_URL=$REACT_APP_API_URL
 RUN npm run build
 
 # Stage 2: Production stage
@@ -31,13 +28,10 @@ RUN npm install -g serve
 COPY --from=builder /app/build ./build
 
 # Copy start script
-COPY start.sh /app/start.sh
+COPY entrypoint.sh /app/entrypoint.sh
 
 # Make script executable
-RUN chmod +x /app/start.sh
-
-# Inject the env-config.js script into index.html
-RUN sed -i '/<head>/a \    <script src="%PUBLIC_URL%/env-config.js"></script>' ./build/index.html
+RUN chmod +x /app/entrypoint.sh
 
 # Create and use non-root user
 RUN addgroup -S nodegroup && \
@@ -46,11 +40,9 @@ RUN addgroup -S nodegroup && \
 
 USER nodeuser
 
-
 EXPOSE 3000
 
 HEALTHCHECK --interval=30s --timeout=3s --start-period=30s \
     CMD wget --quiet --tries=1 --spider http://localhost:3000 || exit 1
 
-# Use the start script
-CMD ["/app/start.sh"]
+CMD ["/app/entrypoint.sh"]

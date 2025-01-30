@@ -1,23 +1,28 @@
-version: '3.8'
-
 services:
+  # Baza danych PostgreSQL
   postgres:
+    # Używamy oficjalnego obrazu PostgreSQL w wersji 15
     image: postgres:15
     container_name: postgres-db
     env_file:
       - ./backend/.envpostgres
     ports:
+      # Mapowanie portu kontenera (5432) na port hosta (5432)
       - "5432:5432"
     volumes:
+      # Trwałe przechowywanie danych PostgreSQL - nawet przy restartowaniu kontenera dane zostaną zachowane
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
+      # Sprawdzanie czy baza danych jest gotowa do przyjmowania połączeń - dzięki temu Docker Compose będzie czekać na uruchomienie bazy danych przed uruchomieniem aplikacji backendowej
       test: ["CMD-SHELL", "pg_isready -U myuser -d mydb"]
       interval: 5s
       timeout: 5s
       retries: 5
 
+  # Aplikacja backendowa
   backend:
     build:
+      # Budowanie obrazu z katalogu backend
       context: ./backend
       dockerfile: Dockerfile
       target: production
@@ -25,32 +30,39 @@ services:
     env_file:
       - ./backend/.env
     ports:
+      # Mapowanie portu aplikacji (3001) na port hosta (3001)
       - "3001:3001"
     depends_on:
+      # Zależność od serwisu postgres - czeka na jego poprawne uruchomienie
       postgres:
         condition: service_healthy
     healthcheck:
+      # Sprawdzanie czy aplikacja backendowa odpowiada na endpoint /health
       test: ["CMD", "node", "-e", "require('http').get('http://localhost:3001/health', (r) => r.statusCode === 200 ? process.exit(0) : process.exit(1))"]
       interval: 30s
       timeout: 3s
       retries: 3
       start_period: 30s
 
+  # Aplikacja frontendowa
   frontend:
     build:
+      # Budowanie obrazu z katalogu frontend
       context: ./frontend
       dockerfile: Dockerfile
-      args:
-        - REACT_APP_API_URL=http://localhost:3001
     container_name: frontend-app
-    #environment:
-    #  - REACT_APP_API_URL=http://localhost:3001
+    environment:
+      # Konfiguracja adresu API dla frontendu
+      - REACT_APP_API_URL=http://localhost:3001
     ports:
+      # Mapowanie portu aplikacji (3000) na port hosta (3000)
       - "3000:3000"
     depends_on:
+      # Zależność od serwisu backend - czeka na jego poprawne uruchomienie
       backend:
         condition: service_healthy
     healthcheck:
+      # Sprawdzanie czy aplikacja frontendowa jest dostępna
       test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000"]
       interval: 30s
       timeout: 3s
@@ -58,4 +70,5 @@ services:
       start_period: 30s
 
 volumes:
+  # Wolumin do przechowywania danych PostgreSQL
   postgres_data: 
