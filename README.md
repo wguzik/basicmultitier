@@ -148,8 +148,8 @@ ACR_NAME="myACR" # zmień tutaj na swoje repozytorium
 az acr login --name $ACR_NAME
 
 # Oznacz obrazy
-docker tag basicmultitier-frontend $ACR_NAME.azurecr.io/frontend:latest
-docker tag basicmultitier-backend $ACR_NAME.azurecr.io/backend:latest
+docker tag basicmultitier_frontend $ACR_NAME.azurecr.io/frontend:latest
+docker tag basicmultitier_backend $ACR_NAME.azurecr.io/backend:latest
 
 # Wypchnij obrazy do rejestru
 docker push $ACR_NAME.azurecr.io/frontend:latest
@@ -179,14 +179,21 @@ az aks get-credentials --resource-group $RG_NAME --name $AKS_NAME
 
 ### Krok 6 - Utwórz wszystkie zasoby w Kubernetes
 
+
+Zaktualizuj odniesienia do obrazów w plikach YAML.
 ```bash
-kubectl apply -f deployment-k8s/namespace.yaml
-kubectl apply -f deployment-k8s/backend-secrets.yaml
-kubectl apply -f deployment-k8s/backend-configmap.yaml
-kubectl apply -f deployment-k8s/frontend-configmap.yaml
-kubectl apply -f deployment-k8s/postgres-deployment.yaml
-kubectl apply -f deployment-k8s/backend-deployment.yaml
-kubectl apply -f deployment-k8s/frontend-deployment.yaml
+find deployments-k8s -type f -exec sed -i 's/myACR/mrt-multitier/g' {} \;
+```
+
+kubectl apply -f deployments-k8s/namespace.yaml
+```bash
+kubectl apply -f deployments-k8s/namespace.yaml
+kubectl apply -f deployments-k8s/backend-secrets.yaml
+kubectl apply -f deployments-k8s/backend-configmap.yaml
+kubectl apply -f deployments-k8s/frontend-configmap.yaml
+kubectl apply -f deployments-k8s/postgres-deployment.yaml
+kubectl apply -f deployments-k8s/backend-deployment.yaml
+kubectl apply -f deployments-k8s/frontend-deployment.yaml
 ```
 
 ### Krok 7 - Pobierz adres IP serwera
