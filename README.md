@@ -4,7 +4,7 @@
 
 Spojrzenie na model mikroserwisowy, metody uruchomienia aplikacji w kontenerach.
 
-Czas trwania: 30 minut
+Czas trwania: 90 minut
 
 ## Wymagania
 
@@ -16,6 +16,8 @@ Zainstalowane:
 - Docker
 - Docker Compose
 - Git
+
+Możesz stworzyć maszynę wirtualną jak w ćwiczeniu: [Basictodo](https://github.com/wguzik/basic/tree/main/basictodo#instalacja-na-maszynie-wirtualnej-linux) i pracować na niej.
 
 ## Kroki
 
@@ -59,7 +61,7 @@ curl http://localhost:3000
 Dlateczego aplikacja frontend nie działa?
 
 ### Wariant maszyny linuksowej
- Jeżeli realizujesz tu ćwiczenie ToDo, musiz najpierw zamknąć oryginalną aplikację.
+ Jeżeli realizujesz tu ćwiczenie ToDo, musisz najpierw zamknąć oryginalną aplikację.
 
 ```bash
 pm2 list
@@ -233,7 +235,7 @@ Wdróż prosty pod z curlem jeżeli chcesz zweryfikować kilka rzeczy "wewnątrz
 kubectl run -i --tty --rm network-debug --image=wbitt/network-multitool --restart=Never -- bash
 ```
 
-### Krok 8 - Skonfiguruj Ingress
+### Krok 7 - Skonfiguruj Ingress
 
 Wdróż ingresy:
 
@@ -252,7 +254,7 @@ Odwiedź adres IP w przeglądarce.
 
 Sprawdź adres `/api/todos`.
 
-### Krok 9 - Popraw konfigurację frontendu
+### Krok 8 - Popraw konfigurację frontendu
 
 Zaktualizuj konfigurację frontend tak, aby wskazywała na adres IP ingresu:
 
@@ -298,7 +300,7 @@ kubectl -n todo-app scale deployment frontend --replicas=0
 kubectl -n todo-app scale deployment frontend --replicas=1
 ```
 
-### Krok 10 - Sprawdź ile zmieści się podów
+### Krok 9 - Sprawdź ile zmieści się podów
 
 ```bash
 kubectl get pods -o wide
@@ -312,7 +314,7 @@ kubectl -n todo-app scale deployment frontend --replicas=10
 kubectl -n todo-app scale deployment frontend --replicas=100
 ```
 
-### Krok 11 - Wymuś limit zasobów
+### Krok 10 - Wymuś limit zasobów
 
 Zeskaluj frontend do jednego podu:
 
