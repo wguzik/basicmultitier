@@ -156,53 +156,48 @@ docker push $ACR_NAME.azurecr.io/frontend:latest
 docker push $ACR_NAME.azurecr.io/backend:latest
 ```
 
-### Krok 5 - Utworzenie Container Apps
+### Krok 5 - Skonfiguruj Kubernetes
+
+Zainstaluj narzędzie do zarządzania Kubernetes:
 
 ```bash
-PROJECT=myProject # zmień tutaj na swój projekt, np. mrt-wg
-ENVIRONMENT=dev
-RANDOM_STRING=$(openssl rand -hex 4) # kawałek losowości
-RESOURCE_GROUP_NAME=rg-${PROJECT}-${ENVIRONMENT}-${RANDOM_STRING}
-CONTAINERAPP_NAME=ca-${PROJECT}-${ENVIRONMENT}-${RANDOM_STRING}
-LOCATION=northeurope
-
-ACR_NAME="myACR" # zmień tutaj na swoje repozytorium
-
-# Utwórz grupę zasobów
-az group create --name $RESOURCE_GROUP_NAME --location $LOCATION
-
-# Utwórz środowisko Container Apps
-az containerapp env create \
-  --name $CONTAINERAPP_NAME \
-  --resource-group $RESOURCE_GROUP_NAME \
-  --location $LOCATION
-
-# Pobierz dane logowania do ACR
-ACR_USERNAME=$(az acr credential show -n $ACR_NAME --query username -o tsv)
-ACR_PASSWORD=$(az acr credential show -n $ACR_NAME --query "passwords[0].value" -o tsv)
-
-# Utwórz aplikację przy użyciu Docker Compose
-# Możesz tutaj nadać uprawnienia ACR do pobierania obrazów, ale celowo wykorzystujemy inną metodę.
-
-az containerapp compose create \
-  --name $CONTAINERAPP_NAME \
-  --resource-group $RESOURCE_GROUP_NAME \
-  --environment $CONTAINERAPP_NAME \
-  --registry-server "$ACR_NAME.azurecr.io" \
-  --registry-username $ACR_USERNAME \
-  --registry-password $ACR_PASSWORD \
-  --file docker-compose.yml
-
-echo "Aplikacja jest dostępna pod adresem:"
-az containerapp show -n $CONTAINERAPP_NAME-frontend -g $RESOURCE_GROUP_NAME --query properties.configuration.ingress.fqdn -o tsv
+sudo snap install kubectl --classic
 ```
 
-## Sprzątanie
-
-Usuń Container App i grupę zasobów:
+Stwórz nowy klaster AKS w Azure:
 
 ```bash
-az group delete --name $RESOURCE_GROUP_NAME --yes --no-wait
+RG_NAME="mrt-multitier"
+AKS_NAME="mrtAks"
+LOCATION="eastus"
+
+az group create --name $RG_NAME --location $LOCATION
+az aks create --resource-group $RG_NAME --name $AKS_NAME --location $LOCATION --enable-app-routing --generate-ssh-keys --node-count 2
+
+az aks get-credentials --resource-group $RG_NAME --name $AKS_NAME
 ```
 
-Pamiętaj o ACR w innym miejscu!
+### Krok 6 - Utwórz wszystkie zasoby w Kubernetes
+
+```bash
+kubectl apply -f deployment-k8s/namespace.yaml
+kubectl apply -f deployment-k8s/backend-secrets.yaml
+kubectl apply -f deployment-k8s/backend-configmap.yaml
+kubectl apply -f deployment-k8s/frontend-configmap.yaml
+kubectl apply -f deployment-k8s/postgres-deployment.yaml
+kubectl apply -f deployment-k8s/backend-deployment.yaml
+kubectl apply -f deployment-k8s/frontend-deployment.yaml
+```
+
+### Krok 7 - Pobierz adres IP serwera
+
+```bash
+kubectl get svc
+```
+
+### Krok 8 - Skonfiguruj Ingress
+
+```bash
+kubectl apply -f ingress.yaml
+```
+

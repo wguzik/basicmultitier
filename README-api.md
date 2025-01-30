@@ -11,6 +11,28 @@ REST API zazwyczaj wykorzystuje następujące metody HTTP:
 - `PATCH` - Częściowa aktualizacja
 - `DELETE` - Usuwanie danych
 
+## Uwierzytelnianie
+
+Większość publicznych API wymaga uwierzytelnienia. Popularne metody to:
+
+### Token Bearer
+```bash
+curl -X GET http://localhost:3000/todos \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIs..."
+```
+
+### Klucz API
+```bash
+curl -X GET http://localhost:3000/todos \
+  -H "X-API-Key: twój-klucz-api"
+```
+
+### Basic Auth
+```bash
+curl -X GET http://localhost:3000/todos \
+  -u "użytkownik:hasło"
+```
+
 ## Podstawowa składnia cURL
 
 Popularne opcje:
@@ -21,13 +43,19 @@ Popularne opcje:
 
 ## Przykładowe zapytania
 
-### 1. Pobierz wszystkie zadania
+### Pobierz wszystkie zadania
 
 ```bash
 curl -X GET http://localhost:3001/api/todos
 ```
 
-### 2. Utwórz nowe zadanie
+### Pobierz zadania w stanie "DONE"
+
+```bash
+curl -X GET "http://localhost:3001/api/todos?state=DONE"
+```
+
+### Utwórz nowe zadanie
 
 ```bash
 curl -X POST http://localhost:3001/api/todos \
@@ -38,20 +66,10 @@ curl -X POST http://localhost:3001/api/todos \
 }'
 ```
 
-### 3. Usuń zadanie
+### Usuń zadanie
 
 ```bash
 curl -X DELETE http://localhost:3001/api/todos/{id}
-```
-
-### 4. Aktualizuj zadanie
-
-```bash
-curl -X PATCH http://localhost:3001/api/todos/{id} \
--H "Content-Type: application/json" \
--d '{
-"state": "COMPLETED"
-}'
 ```
 
 ### Pobierz pojedyncze zadanie
@@ -60,15 +78,25 @@ curl -X PATCH http://localhost:3001/api/todos/{id} \
 curl -X GET http://localhost:3001/api/todos/{id}
 ``` 
 
-### Aktualizuj zadanie
+### Przesuń zadanie do kategorii "IN_PROGRESS" i zaktualizuj treść
 
 ```bash
 curl -X PUT http://localhost:3001/api/todos/{id} \
 -H "Content-Type: application/json" \
 -d '{
-"title": "Zaktualizowany tytuł",
-"description": "Zaktualizowany opis",
+"title": "Nauczyć się REST API",
+"description": "Nadal ćwiczyć cURL",
 "state": "IN_PROGRESS"
+}'
+```
+
+### Przesuń zadanie do kategorii "DONE"
+
+```bash
+curl -X PATCH http://localhost:3001/api/todos/{id} \
+-H "Content-Type: application/json" \
+-d '{
+"state": "DONE"
 }'
 ```
 
