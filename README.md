@@ -356,7 +356,7 @@ Zeskaluj frontend do jednego podu:
 kubectl -n todo-app scale deployment frontend --replicas=1
 ```
 
-W aplikacji frontend zmień limit zasobów odkomentowując linijki:
+W `nano deployments-k8s/frontend-deployment.yaml` zmień limit zasobów odkomentowując linijki:
 
 ```yaml
         #resources:
