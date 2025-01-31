@@ -170,7 +170,7 @@ Dopisz w obiekcie `server` aby udostępnić usługę backend:
 Zaktualizuj zmienną środowiskową w `docker-compose.yml` żeby wskazać adres publiczny adres IP:
 
 ```bash
-sed -i 's/localhost:3001/<adresip>/' docker-compose.yml
+- REACT_APP_API_URL=http://<PublicznyAdres>
 ```
 
 ```bash
