@@ -337,7 +337,7 @@ kubectl -n todo-app scale deployment frontend --replicas=1
 ### Krok 9 - Sprawdź ile zmieści się podów
 
 ```bash
-kubectl get pods -o wide
+kubectl get pods -A -o wide
 ```
 
 ```bash
