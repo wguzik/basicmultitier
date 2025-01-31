@@ -115,13 +115,13 @@ Uruchom aplikację:
 ```bash
 cd ~/basicmultitier
 docker compose up --build
-
-ctr+c żeby wyjść
 ```
 
 Aplikacja będzie dostępna pod adresem http://localhost:3000 jeżeli pracujesz lokalnie lub pod adresem <publiczne IP>.
 
 Przenalizuj plik `docker-compose.yml`.
+
+Ctrl+C aby wyjśc.
 
 ### Wariant maszyny linuksowej
 
@@ -148,6 +148,7 @@ Zaktualizuj zmienną środowiskową w `docker-compose.yml` żeby wskazać adres 
 
 ```bash
 sed -i 's/localhost:3001/<adresip>/' docker-compose.yaml
+```
 
 ```bash
 sudo systemctl restart nginx
