@@ -116,14 +116,12 @@ Uruchom aplikację:
 cd ~/basicmultitier
 docker compose up --build
 
-# sudo apt install docker-compose, potwierdź instalację
-
 ctr+c żeby wyjść
 ```
 
 Aplikacja będzie dostępna pod adresem http://localhost:3000 jeżeli pracujesz lokalnie lub pod adresem <publiczne IP>.
 
-Przenalizuj plik docker-compose.yml.
+Przenalizuj plik `docker-compose.yml`.
 
 ### Wariant maszyny linuksowej
 
@@ -158,7 +156,7 @@ sudo systemctl restart nginx
 Uruchom aplikację:
 
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 
 Otwórz w przeglądarce adres IP maszyny linuksowej.
