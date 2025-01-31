@@ -23,6 +23,12 @@ Możesz stworzyć maszynę wirtualną jak w ćwiczeniu: [Basictodo](https://gith
 
 ### Krok 1 - Sklonuj repozytorium
 
+Upewnij się, że jesteś w katalogu domowym:
+
+```bash
+cd ~
+```
+
 ```bash
 git clone https://github.com/wguzik/basicmultitier.git
 ```
@@ -40,7 +46,24 @@ cd basicmultitier
 cd backend
 cp .env.example .env
 docker build -t backend-app:latest .
+```
+
+```bash
 docker run -d -p 3001:3001 --name backend-app backend-app:latest
+```
+
+Sprawdź logi aplikacji backend:
+
+```bash
+docker ps -a
+docker logs <id>
+```
+
+Skąd wziąć brakującą zmienną?
+
+```bash
+# nie uruchamiaj tego teraz, ale tak :)
+docker run -d -p 3001:3001 --name backend-app -e APPSETTING_DATABASE_URL="dburl" backend-app:latest
 ```
 
 - zbuduj i uruchom frontend
