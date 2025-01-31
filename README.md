@@ -225,7 +225,8 @@ Dokumentacja: [Integracja klastra AKS z repozytorium ACR](https://learn.microsof
 
 Zaktualizuj odniesienia do obrazów w plikach YAML.
 ```bash
-find deployments-k8s -type f -exec sed -i 's/<nazwaAcr>/acr/g' {} \;
+echo $ACR_NAME
+find deployments-k8s -type f -exec sed -i 's/acr/<nazwaAcr>/g' {} \;
 ```
 
 kubectl apply -f deployments-k8s/namespace.yaml
