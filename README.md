@@ -204,7 +204,11 @@ LOCATION="eastus"
 
 az group create --name $RG_NAME --location $LOCATION
 az aks create --resource-group $RG_NAME --name $AKS_NAME --location $LOCATION --enable-app-routing --generate-ssh-keys --node-count 2
+```
 
+"Zaloguj się" do klastra:
+
+```bash
 az aks get-credentials --resource-group $RG_NAME --name $AKS_NAME
 ```
 
@@ -240,7 +244,7 @@ kubectl -n todo-app get pods
 kubectl -n todo-app logs <backend-pod-id>
 ```
 
-Zamień w pliku backend-deployment.yaml:
+Zamień w pliku `backend-deployment.yaml`:
 ```yaml
         env:
         - name: APPSETTING_DATABASE_URL 
