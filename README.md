@@ -84,7 +84,8 @@ curl http://localhost:3000
 Dlateczego aplikacja frontend nie działa?
 
 ### Wariant maszyny linuksowej
- Jeżeli realizujesz tu ćwiczenie ToDo, musisz najpierw zamknąć oryginalną aplikację.
+
+Jeżeli realizujesz tu ćwiczenie ToDo, musisz najpierw zamknąć oryginalną aplikację.
 
 ```bash
 pm2 list
@@ -118,16 +119,32 @@ docker stop <ID>
 docker rm <ID>
 ```
 
-```bash
-cd ~/basicmultitier
-docker-compose up --build
+```zainstaluj plugin compose
+DOCKER_CONFIG=${DOCKER_CONFIG:-$HOME/.docker}
+mkdir -p $DOCKER_CONFIG/cli-plugins
+curl -SL https://github.com/docker/compose/releases/download/v2.32.4/docker-compose-linux-x86_64 -o $DOCKER_CONFIG/cli-plugins/docker-compose
 
-# sudo apt install docker-compose, potwierdź instalację
+chmod +x $DOCKER_CONFIG/cli-plugins/docker-compose
 ```
 
-Aplikacja będzie dostępna pod adresem http://localhost:3000
+Sprawdź czy działa:
 
-Przenalizuj plik docker-compose.yml.
+```
+docker compose version
+```
+
+Uruchom aplikację: 
+
+```bash
+cd ~/basicmultitier
+docker compose up --build
+```
+
+Aplikacja będzie dostępna pod adresem http://localhost:3000 jeżeli pracujesz lokalnie lub pod adresem <publiczne IP>.
+
+Przenalizuj plik `docker-compose.yml`.
+
+Ctrl+C aby wyjśc.
 
 ### Wariant maszyny linuksowej
 
@@ -137,7 +154,7 @@ Zmodyfikuj ustawienie Nginx:
 sudo nano /etc/nginx/sites-available/basictodo
 ```
 
-Dopisz:
+Dopisz w obiekcie `server` aby udostępnić usługę backend:
 
 ```bash
     location /api/todos {
@@ -150,8 +167,20 @@ Dopisz:
     }
 ```
 
+Zaktualizuj zmienną środowiskową w `docker-compose.yml` żeby wskazać adres publiczny adres IP:
+
+```bash
+sed -i 's/localhost:3001/<adresip>/' docker-compose.yaml
+```
+
 ```bash
 sudo systemctl restart nginx
+```
+
+Uruchom aplikację:
+
+```bash
+docker compose up -d
 ```
 
 Otwórz w przeglądarce adres IP maszyny linuksowej.
@@ -198,7 +227,11 @@ LOCATION="eastus"
 
 az group create --name $RG_NAME --location $LOCATION
 az aks create --resource-group $RG_NAME --name $AKS_NAME --location $LOCATION --enable-app-routing --generate-ssh-keys --node-count 2
+```
 
+"Zaloguj się" do klastra:
+
+```bash
 az aks get-credentials --resource-group $RG_NAME --name $AKS_NAME
 ```
 
@@ -215,7 +248,8 @@ Dokumentacja: [Integracja klastra AKS z repozytorium ACR](https://learn.microsof
 
 Zaktualizuj odniesienia do obrazów w plikach YAML.
 ```bash
-find deployments-k8s -type f -exec sed -i 's/<nazwaAcr>/acr/g' {} \;
+echo $ACR_NAME
+find deployments-k8s -type f -exec sed -i 's/acr/<nazwaAcr>/g' {} \;
 ```
 
 kubectl apply -f deployments-k8s/namespace.yaml
@@ -234,7 +268,7 @@ kubectl -n todo-app get pods
 kubectl -n todo-app logs <backend-pod-id>
 ```
 
-Zamień w pliku backend-deployment.yaml:
+Zamień w pliku `backend-deployment.yaml`:
 ```yaml
         env:
         - name: APPSETTING_DATABASE_URL 
@@ -326,7 +360,7 @@ kubectl -n todo-app scale deployment frontend --replicas=1
 ### Krok 9 - Sprawdź ile zmieści się podów
 
 ```bash
-kubectl get pods -o wide
+kubectl get pods -A -o wide
 ```
 
 ```bash
@@ -345,7 +379,7 @@ Zeskaluj frontend do jednego podu:
 kubectl -n todo-app scale deployment frontend --replicas=1
 ```
 
-W aplikacji frontend zmień limit zasobów odkomentowując linijki:
+W `nano deployments-k8s/frontend-deployment.yaml` zmień limit zasobów odkomentowując linijki:
 
 ```yaml
         #resources:
@@ -376,3 +410,8 @@ Sprawdź jakie zasoby są używane przez pody:
 ```bash
 kubectl -n todo-app top pod
 ```
+
+## Krok -1 - Usuń zasoby
+
+Pamiętaj o usunięciu zasobów po skończonych zajęciach.
+
