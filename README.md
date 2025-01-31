@@ -96,9 +96,25 @@ docker stop <ID>
 docker rm <ID>
 ```
 
+```zainstaluj plugin compose
+DOCKER_CONFIG=${DOCKER_CONFIG:-$HOME/.docker}
+mkdir -p $DOCKER_CONFIG/cli-plugins
+curl -SL https://github.com/docker/compose/releases/download/v2.32.4/docker-compose-linux-x86_64 -o $DOCKER_CONFIG/cli-plugins/docker-compose
+
+chmod +x $DOCKER_CONFIG/cli-plugins/docker-compose
+```
+
+Sprawdź czy działa:
+
+```
+docker compose version
+```
+
+Uruchom aplikację: 
+
 ```bash
 cd ~/basicmultitier
-docker-compose up --build
+docker compose up --build
 
 # sudo apt install docker-compose, potwierdź instalację
 
@@ -130,7 +146,7 @@ Dopisz w obiekcie `server` aby udostępnić usługę backend:
     }
 ```
 
-Zaktualizuj zmienną środowiskową w `docker-compose` żeby wskazać adres publiczny adres IP:
+Zaktualizuj zmienną środowiskową w `docker-compose.yml` żeby wskazać adres publiczny adres IP:
 
 ```bash
 sed -i 's/localhost:3001/<adresip>/' docker-compose.yaml
