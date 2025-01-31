@@ -387,3 +387,8 @@ Sprawdź jakie zasoby są używane przez pody:
 ```bash
 kubectl -n todo-app top pod
 ```
+
+## Krok -1 - Usuń zasoby
+
+Pamiętaj o usunięciu zasobów po skończonych zajęciach.
+
