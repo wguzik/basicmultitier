@@ -61,7 +61,8 @@ curl http://localhost:3000
 Dlateczego aplikacja frontend nie działa?
 
 ### Wariant maszyny linuksowej
- Jeżeli realizujesz tu ćwiczenie ToDo, musisz najpierw zamknąć oryginalną aplikację.
+
+Jeżeli realizujesz tu ćwiczenie ToDo, musisz najpierw zamknąć oryginalną aplikację.
 
 ```bash
 pm2 list
@@ -100,9 +101,11 @@ cd ~/basicmultitier
 docker-compose up --build
 
 # sudo apt install docker-compose, potwierdź instalację
+
+ctr+c żeby wyjść
 ```
 
-Aplikacja będzie dostępna pod adresem http://localhost:3000
+Aplikacja będzie dostępna pod adresem http://localhost:3000 jeżeli pracujesz lokalnie lub pod adresem <publiczne IP>.
 
 Przenalizuj plik docker-compose.yml.
 
@@ -114,7 +117,7 @@ Zmodyfikuj ustawienie Nginx:
 sudo nano /etc/nginx/sites-available/basictodo
 ```
 
-Dopisz:
+Dopisz w obiekcie `server` aby udostępnić usługę backend:
 
 ```bash
     location /api/todos {
@@ -127,8 +130,19 @@ Dopisz:
     }
 ```
 
+Zaktualizuj zmienną środowiskową w `docker-compose` żeby wskazać adres publiczny adres IP:
+
+```bash
+sed -i 's/localhost:3001/<adresip>/' docker-compose.yaml
+
 ```bash
 sudo systemctl restart nginx
+```
+
+Uruchom aplikację:
+
+```bash
+docker-compose up -d
 ```
 
 Otwórz w przeglądarce adres IP maszyny linuksowej.
