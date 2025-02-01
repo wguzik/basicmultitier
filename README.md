@@ -42,9 +42,14 @@ cd basicmultitier
 - zbuduj i uruchom backend
 
 ```bash
-# Budowanie i uruchomienie backendu
 cd backend
+```
+
+```bash
 cp .env.example .env
+```
+
+```bash
 docker build -t backend-app:latest .
 ```
 
@@ -71,7 +76,13 @@ docker run -d -p 3001:3001 --name backend-app -e APPSETTING_DATABASE_URL="dburl"
 ```bash
 # W nowym terminalu - budowanie i uruchomienie frontendu
 cd ../frontend
+```
+
+```bash
 docker build -t frontend-app:latest .
+```
+
+```bash
 docker run -d -p 3000:3000 --name frontend-app frontend-app:latest
 ```
 
@@ -85,7 +96,7 @@ Dlateczego aplikacja frontend nie działa?
 
 ### Wariant maszyny linuksowej
 
-Jeżeli realizujesz tu ćwiczenie ToDo, musisz najpierw zamknąć oryginalną aplikację.
+> Jeżeli realizujesz to ćwiczenie na maszynie na której dział(o) ToDo, musisz najpierw zamknąć oryginalną aplikację.
 
 ```bash
 pm2 list
@@ -123,7 +134,9 @@ docker rm <ID>
 DOCKER_CONFIG=${DOCKER_CONFIG:-$HOME/.docker}
 mkdir -p $DOCKER_CONFIG/cli-plugins
 curl -SL https://github.com/docker/compose/releases/download/v2.32.4/docker-compose-linux-x86_64 -o $DOCKER_CONFIG/cli-plugins/docker-compose
+```
 
+```bash
 chmod +x $DOCKER_CONFIG/cli-plugins/docker-compose
 ```
 
@@ -137,18 +150,18 @@ Uruchom aplikację:
 
 ```bash
 cd ~/basicmultitier
+```
+
+```bash
 docker compose up --build
 ```
+Ctrl+C aby wyjśc.
 
 Aplikacja będzie dostępna pod adresem http://localhost:3000 jeżeli pracujesz lokalnie lub pod adresem <publiczne IP>.
 
 Przenalizuj plik `docker-compose.yml`.
 
-Ctrl+C aby wyjśc.
-
-### Wariant maszyny linuksowej
-
-Zmodyfikuj ustawienie Nginx:
+- udostępnij backend
 
 ```bash
 sudo nano /etc/nginx/sites-available/basictodo
@@ -184,7 +197,6 @@ docker compose up -d
 ```
 
 Otwórz w przeglądarce adres IP maszyny linuksowej.
-
 
 ### Krok 4 - Wgranie obrazów do Azure Container Registry
 
