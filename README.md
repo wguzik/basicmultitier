@@ -74,7 +74,6 @@ docker run -d -p 3001:3001 --name backend-app -e APPSETTING_DATABASE_URL="dburl"
 - zbuduj i uruchom frontend
 
 ```bash
-# W nowym terminalu - budowanie i uruchomienie frontendu
 cd ../frontend
 ```
 
