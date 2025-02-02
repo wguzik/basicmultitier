@@ -199,7 +199,7 @@ Otwórz w przeglądarce adres IP maszyny linuksowej.
 
 ### Krok 4 - Wgranie obrazów do Azure Container Registry
 
-Stwórz repozytorium w [Basic ACR](https://github.com/wguzik/basic/blob/main/basictodo/basicacr).
+Stwórz repozytorium w [Basic ACR](https://github.com/wguzik/basic/blob/main/basicacr), pod warunkiem, że nie tworzyłeś/aś wcześniej.
 
 > Wykonaj ćwiczenie z katalogu basicacr za pomocą Cloud Shell lub na swoim komputerze. Możesz na maszynie wirtualnej, aczkolwiek musisz doinstalować Terraform i Azure CLI.
 
@@ -213,8 +213,8 @@ ACR_NAME="myACR" # zmień tutaj na swoje repozytorium
 az acr login --name $ACR_NAME
 
 # Oznacz obrazy
-docker tag basicmultitier_frontend $ACR_NAME.azurecr.io/frontend:latest
-docker tag basicmultitier_backend $ACR_NAME.azurecr.io/backend:latest
+docker tag basicmultitier-frontend $ACR_NAME.azurecr.io/frontend:latest
+docker tag basicmultitier-backend $ACR_NAME.azurecr.io/backend:latest
 
 # Wypchnij obrazy do rejestru
 docker push $ACR_NAME.azurecr.io/frontend:latest
